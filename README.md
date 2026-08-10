@@ -1,205 +1,133 @@
-# بنك رقمي — Digital Bank
+# 🏦 بنك رقمي - Digital Banking Platform
 
-Full-stack digital banking platform built with **React + TypeScript** frontend and **Firebase** backend.
+تطبيق بنكي رقمي متكامل مبني باستخدام React + Firebase Cloud Functions.
 
-## Tech Stack
+## 🚀 الميزات
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 18 + TypeScript + Vite |
-| UI | Tailwind CSS + Lucide Icons |
-| State | Zustand + React Query |
-| Forms | React Hook Form + Zod |
-| Backend | Firebase (Auth, Firestore, Functions, Storage) |
-| Hosting | Firebase Hosting |
+### الواجهة الأمامية (Frontend)
+- **لوحة تحكم** - عرض الأرصدة والمعاملات الأخيرة
+- **تحويل أموال** - تحويل فوري بين الحسابات
+- **دفع فواتير** - دفع فواتير الكهرباء والمياه والإنترنت
+- **سجل المعاملات** - تاريخ كامل مع فلترة وبحث
+- **الملف الشخصي** - إدارة المعلومات الشخصية
+- **لوحة الإدارة** - إدارة المستخدمين والأدوار (للمديرين)
 
-## Features
+### الخدمات الخلفية (Cloud Functions)
+- **تسجيل المستخدمين** - إنشاء حساب تلقائي مع محفظة افتراضية
+- **تحويل الأموال** - معالجة آمنة باستخدام Firestore Transactions
+- **دفع الفواتير** - معالجة مدفوعات الفواتير
+- **إدارة الأدوار** - تعيين صلاحيات المستخدمين
+- **عكس المعاملات** - إمكانية التراجع عن المعاملات (للمديرين)
 
-- 🔐 Phone + Password authentication
-- 👤 User profiles with KYC support
-- 💰 Multi-currency wallet accounts (YER, USD, SAR)
-- 💸 Money transfers with atomic balance updates
-- 📄 Bill payments (electricity, water, internet, phone)
-- 📊 Transaction history with filters
-- 🔔 Real-time notifications
-- 👥 Admin panel with user management
-- 🔒 RBAC (customer, agent, admin, super_admin)
-- 📱 Responsive RTL design (Arabic-first)
-- 🌙 Dark mode support
+### الأمان
+- **قواعد Firestore** - RBAC مع 4 أدوار (عميل، وكيل، مدير، مدير عام)
+- **حماية التخزين** - قواعد أمان للصور والمستندات
+- **التحقق من المدخلات** - جميع المدخلات يتم التحقق منها
+- **سجلات التدقيق** - تتبع جميع العمليات الحساسة
 
-## Architecture
+## 📋 المتطلبات
 
-```
-src/
-├── components/     # Reusable UI + Layout
-├── pages/          # Route pages (auth, dashboard, transfer, bills, admin)
-├── services/       # Firebase API abstraction layer
-├── hooks/          # Custom React hooks
-├── store/          # Zustand state stores
-├── types/          # TypeScript interfaces
-├── utils/          # Helpers (format, validation)
-├── i18n/           # Translations (Arabic)
-└── config/         # Firebase configuration
-
-functions/          # Firebase Cloud Functions (TypeScript)
-├── src/
-│   ├── auth.ts     # User creation trigger
-│   ├── transactions.ts  # Transfer + bill payment
-│   ├── admin.ts    # Role management
-│   └── utils/      # Validators + logger
-```
-
-## Security
-
-- ✅ Firestore Security Rules with RBAC custom claims
-- ✅ Storage Security Rules (avatars, KYC docs)
-- ✅ Client-side writes to `transactions` blocked (Cloud Functions only)
-- ✅ Atomic balance updates via Firestore transactions
-- ✅ Structured audit logging
-- ✅ Input validation on client + server
-- ✅ Firebase App Check ready
-
-## Getting Started
-
-### Prerequisites
 - Node.js 18+
-- Firebase CLI (`npm install -g firebase-tools`)
-- Firebase project
+- Firebase CLI
+- حساب Firebase مشروع
 
-### Setup
+## 🛠️ التثبيت
 
 ```bash
-# Install dependencies
+# تثبيت التبعيات
 npm install
 
-# Install function dependencies
+# تثبيت تبعيات Cloud Functions
 cd functions && npm install && cd ..
 
-# Copy environment variables
+# إنشاء ملف البيئة
 cp .env.example .env
+# قم بتعديل .env بإعدادات Firebase الخاصة بك
+```
 
-# Edit .env with your Firebase config
-# Get config from: Firebase Console → Project Settings → General → Your apps
+## ▶️ التشغيل
 
-# Run development server
+```bash
+# تشغيل التطبيق محلياً
 npm run dev
 
-# Run Firebase emulators (optional)
+# تشغيل Firebase Emulators
 firebase emulators:start
+
+# تشغيل Cloud Functions محلياً
+npm run functions:serve
 ```
 
-### Deploy
+## 🚀 النشر
 
 ```bash
-# Build and deploy everything
-npm run deploy
+# بناء التطبيق
+npm run build
 
-# Deploy only hosting
-npm run deploy:hosting
+# نشر كل شي
+firebase deploy
 
-# Deploy only functions
-npm run deploy:functions
+# نشر فقط الاستضافة
+firebase deploy --only hosting
 
-# Deploy only rules
-npm run deploy:rules
+# نشر فقط Cloud Functions
+firebase deploy --only functions
+
+# نشر فقط قواعد الأمان
+firebase deploy --only firestore:rules,storage
 ```
 
-## Environment Variables
-
-| Variable | Description |
-|---|---|
-| `VITE_FIREBASE_API_KEY` | Firebase API Key |
-| `VITE_FIREBASE_AUTH_DOMAIN` | Firebase Auth Domain |
-| `VITE_FIREBASE_PROJECT_ID` | Firebase Project ID |
-| `VITE_FIREBASE_STORAGE_BUCKET` | Firebase Storage Bucket |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | FCM Sender ID |
-| `VITE_FIREBASE_APP_ID` | Firebase App ID |
-| `VITE_FIREBASE_MEASUREMENT_ID` | Analytics Measurement ID |
-| `VITE_APP_NAME` | Application name |
-| `VITE_APP_DEFAULT_LANG` | Default language (ar) |
-
-## Firebase Setup
-
-### 1. Create Firebase Project
-Go to [Firebase Console](https://console.firebase.google.com) and create a new project.
-
-### 2. Enable Authentication
-- Go to Authentication → Sign-in method
-- Enable Email/Password provider
-
-### 3. Create Firestore Database
-- Go to Firestore Database
-- Create database in production mode
-- Deploy security rules: `firebase deploy --only firestore:rules`
-
-### 4. Enable Storage
-- Go to Storage
-- Get started with default bucket
-- Deploy storage rules: `firebase deploy --only storage`
-
-### 5. Deploy Functions
-```bash
-cd functions
-npm install
-npm run deploy
-```
-
-### 6. Set Custom Claims
-After deploying functions, set the first super admin:
-```bash
-# Via Firebase CLI or Admin SDK
-firebase functions:shell
-> setUserRole({userId: 'YOUR_UID', role: 'super_admin'})
-```
-
-## Flutter Integration
-
-The Firebase backend is designed to be shared with a future Flutter app:
-- Same Firestore collections
-- Same Auth system
-- Same Cloud Functions
-- Same Security Rules
-
-Flutter app will use identical data models with `cloud_firestore` package.
-
-## Project Structure
+## 📁 هيكل المشروع
 
 ```
 digital-bank/
-├── public/
-├── src/
-│   ├── components/
-│   │   ├── ui/           # Button, Input, Card
-│   │   └── layout/       # Sidebar, Header, AppLayout, AuthLayout
-│   ├── pages/
-│   │   ├── auth/         # Login, Register, ForgotPassword
-│   │   ├── dashboard/    # Main dashboard
-│   │   ├── transfer/     # Money transfer
-│   │   ├── bills/        # Bill payment
-│   │   ├── history/      # Transaction history
-│   │   ├── profile/      # User profile
-│   │   ├── settings/     # App settings
-│   │   └── admin/        # Admin panel
-│   ├── services/         # Firebase API layer
-│   ├── hooks/            # useAuth, useNotifications
-│   ├── store/            # Zustand stores
-│   ├── types/            # TypeScript types
-│   ├── utils/            # format, cn
-│   ├── i18n/             # Arabic translations
-│   └── config/           # Firebase config
-├── functions/
-│   └── src/              # Cloud Functions
-├── firestore.rules
-├── storage.rules
-├── firestore.indexes.json
-├── firebase.json
-├── .firebaserc
-├── .env.example
-├── .gitignore
-├── README.md
-└── ARCHITECTURE.md
+├── src/                      # الكود المصدري للواجهة الأمامية
+│   ├── components/          # المكونات
+│   │   ├── layout/         # مكونات التخطيط
+│   │   └── ui/             # مكونات UI
+│   ├── config/             # الإعدادات
+│   ├── hooks/              # React Hooks
+│   ├── pages/              # الصفحات
+│   │   ├── admin/         # صفحات الإدارة
+│   │   ├── auth/          # صفحات المصادقة
+│   │   ├── bills/         # صفحة الفواتير
+│   │   ├── dashboard/     # لوحة التحكم
+│   │   ├── history/       # سجل المعاملات
+│   │   ├── profile/       # الملف الشخصي
+│   │   ├── settings/      # الإعدادات
+│   │   └── transfer/      # تحويل الأموال
+│   ├── services/           # خدمات Firebase
+│   ├── store/              # Zustand Stores
+│   ├── types/              # أنواع TypeScript
+│   └── utils/              # أدوات مساعدة
+├── functions/                # Firebase Cloud Functions
+│   └── src/
+│       ├── auth.ts         # مصادقة المستخدمين
+│       ├── transactions.ts # معالجة المعاملات
+│       ├── admin.ts        # وظائف الإدارة
+│       └── utils/          # أدوات مساعدة
+├── firebase.json             # إعدادات Firebase
+├── firestore.rules           # قواعد Firestore
+├── storage.rules             # قواعد التخزين
+└── firestore.indexes.json    # فهارس Firestore
 ```
 
-## License
+## 🔑 الأدوار والصلاحيات
 
-Private — All rights reserved.
+| الدور | الوصف |
+|-------|-------|
+| `customer` | عميل عادي - يمكنه إدارة حساباته والتحويل |
+| `agent` | وكيل - يمكنه مساعدة العملاء |
+| `admin` | مدير - يمكنه إدارة المستخدمين |
+| `super_admin` | مدير عام - كل الصلاحيات |
+
+## 💡 ملاحظات
+
+- جميع المبالغ بالوحدات الصغيرة (cents) لتجنب مشاكل الفاصلة العشرية
+- Cloud Functions تستخدم Node.js 18
+- الواجهة تدعم اللغة العربية (RTL)
+- التصميم متجاوب مع جميع الشاشات
+
+## 📄 الترخيص
+
+MIT
