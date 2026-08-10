@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بنك رقمي - معاينة الهاتف</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: { 50:'#f0f9ff',100:'#e0f2fe',200:'#bae6fd',300:'#7dd3fc',400:'#38bdf8',500:'#0ea5e9',600:'#0284c7',700:'#0369a1',800:'#075985',900:'#0c4a6e' },
+        danger: { 50:'#fef2f2',100:'#fee2e2',500:'#ef4444',600:'#dc2626' },
+        success: { 50:'#f0fdf4',100:'#dcfce7',500:'#22c55e',600:'#16a34a',700:'#15803d' },
+        accent: { 50:'#fdf4ff',100:'#fae8ff',500:'#d946ef',600:'#c026d3',700:'#a21caf' },
+      },
+      fontFamily: { sans: ['IBM Plex Sans Arabic','sans-serif'] },
+    }
+  }
+}
+</script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'IBM Plex Sans Arabic',sans-serif; background:#f9fafb; }
+.phone-frame {
+  width: 390px; height: 844px;
+  border-radius: 40px;
+  border: 8px solid #1f2937;
+  overflow: hidden;
+  position: relative;
+  background: white;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+}
+.phone-notch {
+  width: 150px; height: 30px;
+  background: #1f2937;
+  border-radius: 0 0 20px 20px;
+  margin: 0 auto;
+  position: relative; z-index: 50;
+}
+.screen { height: 100%; overflow-y: auto; }
+.screen::-webkit-scrollbar { width: 0; }
+.tab-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex; justify-content: space-around;
+  padding: 8px 0 20px;
+  z-index: 40;
+}
+.tab-item { display:flex; flex-direction:column; align-items:center; gap:2px; font-size:10px; color:#9ca3af; }
+.tab-item.active { color:#0284c7; }
+.fade-in { animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:linear-gradient(135deg,#0c4a6e,#0369a1);gap:40px;padding:20px;flex-wrap:wrap">
+
+<!-- ====== PHONE 1: Dashboard ====== -->
+<div>
+<p style="color:white;text-align:center;margin-bottom:12px;font-size:14px;font-weight:600">📱 لوحة التحكم</p>
+<div class="phone-frame">
+<div class="phone-notch"></div>
+<div class="screen" style="padding-bottom:70px">
+
+<!-- Header -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:white;border-bottom:1px solid #f3f4f6">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div style="width:36px;height:36px;border-radius:50%;background:#e0f2fe;display:flex;align-items:center;justify-content:center">
+      <span style="color:#0284c7;font-weight:600;font-size:14px">م</span>
+    </div>
+    <span style="font-size:13px;color:#374151;font-weight:500">محمد أحمد</span>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center">
+    <div style="position:relative">
+      <svg width="20" height="20" fill="none" stroke="#6b7280" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <span style="position:absolute;top:-4px;left:-4px;width:16px;height:16px;border-radius:50%;background:#ef4444;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700">3</span>
+    </div>
+    <svg width="20" height="20" fill="none" stroke="#6b7280" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+  </div>
+</div>
+
+<!-- Welcome -->
+<div style="padding:16px">
+  <h1 style="font-size:20px;font-weight:700;color:#111827">مرحباً، محمد 👋</h1>
+  <p style="font-size:13px;color:#6b7280;margin-top:4px">إليك ملخص حساباتك اليوم</p>
+</div>
+
+<!-- Balance Card -->
+<div style="margin:0 16px 16px;background:linear-gradient(to left,#0284c7,#0369a1);border-radius:16px;padding:20px;color:white">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <span style="color:#bae6fd;font-size:13px">الرصيد الكلي</span>
+    <svg width="20" height="20" fill="none" stroke="#7dd3fc" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+  </div>
+  <p style="font-size:32px;font-weight:700;margin-bottom:8px">١٢٥٬٠٠٠٫٠٠ ﷼</p>
+  <div style="display:flex;align-items:center;gap:6px;color:#bae6fd;font-size:12px">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    <span>+12.5% هذا الشهر</span>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div style="padding:0 16px 16px">
+  <h2 style="font-size:16px;font-weight:600;color:#111827;margin-bottom:12px">إجراءات سريعة</h2>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+    <button style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:12px;background:white;box-shadow:0 1px 3px rgba(0,0,0,0.08);border:none;cursor:pointer">
+      <div style="width:44px;height:44px;border-radius:12px;background:#e0f2fe;display:flex;align-items:center;justify-content:center">
+        <svg width="22" height="22" fill="none" stroke="#0284c7" stroke-width="2" viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+      </div>
+      <span style="font-size:12px;color:#374151;font-weight:500">تحويل</span>
+    </button>
+    <button style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:12px;background:white;box-shadow:0 1px 3px rgba(0,0,0,0.08);border:none;cursor:pointer">
+      <div style="width:44px;height:44px;border-radius:12px;background:#fae8ff;display:flex;align-items:center;justify-content:center">
+        <svg width="22" height="22" fill="none" stroke="#c026d3" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <span style="font-size:12px;color:#374151;font-weight:500">فاتورة</span>
+    </button>
+    <button style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:12px;background:white;box-shadow:0 1px 3px rgba(0,0,0,0.08);border:none;cursor:pointer">
+      <div style="width:44px;height:44px;border-radius:12px;background:#f0fdf4;display:flex;align-items:center;justify-content:center">
+        <svg width="22" height="22" fill="none" stroke="#16a34a" stroke-width="2" viewBox="0 0 24 24"><polyline points="7 17 17 7"/><polyline points="7 7 17 7 17 17"/></svg>
+      </div>
+      <span style="font-size:12px;color:#374151;font-weight:500">إيداع</span>
+    </button>
+    <button style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:12px;background:white;box-shadow:0 1px 3px rgba(0,0,0,0.08);border:none;cursor:pointer">
+      <div style="width:44px;height:44px;border-radius:12px;background:#fef2f2;display:flex;align-items:center;justify-content:center">
+        <svg width="22" height="22" fill="none" stroke="#dc2626" stroke-width="2" viewBox="0 0 24 24"><polyline points="17 7 7 17"/><polyline points="17 17 7 17 7 7"/></svg>
+      </div>
+      <span style="font-size:12px;color:#374151;font-weight:500">سحب</span>
+    </button>
+  </div>
+</div>
+
+<!-- Accounts -->
+<div style="padding:0 16px 16px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <h2 style="font-size:16px;font-weight:600;color:#111827">حساباتي</h2>
+    <button style="font-size:13px;color:#0284c7;background:none;border:none;cursor:pointer;font-weight:500">عرض الكل</button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="border:1px solid #e5e7eb;border-radius:12px;padding:14px;background:white">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:12px;color:#6b7280">محفظة</span>
+        <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#dcfce7;color:#15803d">نشط</span>
+      </div>
+      <p style="font-size:20px;font-weight:700;color:#111827;margin-bottom:4px">٧٥٬٠٠٠٫٠٠ ﷼</p>
+      <p style="font-size:11px;color:#9ca3af;font-family:monospace">967 777 1234</p>
+    </div>
+    <div style="border:1px solid #e5e7eb;border-radius:12px;padding:14px;background:white">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:12px;color:#6b7280">توفير</span>
+        <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#dcfce7;color:#15803d">نشط</span>
+      </div>
+      <p style="font-size:20px;font-weight:700;color:#111827;margin-bottom:4px">٥٠٬٠٠٠٫٠٠ ﷼</p>
+      <p style="font-size:11px;color:#9ca3af;font-family:monospace">967 777 5678</p>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Transactions -->
+<div style="padding:0 16px 16px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <h2 style="font-size:16px;font-weight:600;color:#111827">آخر المعاملات</h2>
+    <button style="font-size:13px;color:#0284c7;background:none;border:none;cursor:pointer;font-weight:500">عرض الكل</button>
+  </div>
+  <div style="border:1px solid #e5e7eb;border-radius:12px;background:white;overflow:hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #f3f4f6">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" fill="none" stroke="#dc2626" stroke-width="2" viewBox="0 0 24 24"><polyline points="7 17 17 7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </div>
+        <div>
+          <p style="font-size:13px;font-weight:500;color:#111827">تحويل إلى علي محمد</p>
+          <p style="font-size:11px;color:#9ca3af">منذ ساعتين</p>
+        </div>
+      </div>
+      <span style="font-size:13px;font-weight:600;color:#dc2626">-٥٬٠٠٠٫٠٠ ﷼</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #f3f4f6">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:#f0fdf4;display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" fill="none" stroke="#16a34a" stroke-width="2" viewBox="0 0 24 24"><polyline points="17 7 7 17"/><polyline points="17 17 7 17 7 7"/></svg>
+        </div>
+        <div>
+          <p style="font-size:13px;font-weight:500;color:#111827">استقبال من سارة</p>
+          <p style="font-size:11px;color:#9ca3af">أمس</p>
+        </div>
+      </div>
+      <span style="font-size:13px;font-weight:600;color:#16a34a">+١٠٬٠٠٠٫٠٠ ﷼</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" fill="none" stroke="#dc2626" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div>
+          <p style="font-size:13px;font-weight:500;color:#111827">فاتورة كهرباء</p>
+          <p style="font-size:11px;color:#9ca3af">منذ 3 أيام</p>
+        </div>
+      </div>
+      <span style="font-size:13px;font-weight:600;color:#dc2626">-٢٬٥٠٠٫٠٠ ﷼</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <div class="tab-item active">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <span>الرئيسية</span>
+  </div>
+  <div class="tab-item">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+    <span>الحسابات</span>
+  </div>
+  <div class="tab-item">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+    <span>تحويل</span>
+  </div>
+  <div class="tab-item">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+    <span>إشعارات</span>
+  </div>
+  <div class="tab-item">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>حسابي</span>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- ====== PHONE 2: Login ====== -->
+<div>
+<p style="color:white;text-align:center;margin-bottom:12px;font-size:14px;font-weight:600">🔐 تسجيل الدخول</p>
+<div class="phone-frame">
+<div class="phone-notch"></div>
+<div class="screen" style="display:flex;flex-direction:column">
+
+<!-- Left branding (hidden on mobile, shown as top section) -->
+<div style="background:linear-gradient(135deg,#0284c7,#0369a1);padding:32px 24px;text-align:center">
+  <div style="width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+    <svg width="28" height="28" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+  </div>
+  <h1 style="font-size:24px;font-weight:700;color:white;margin-bottom:4px">بنك رقمي</h1>
+  <p style="font-size:13px;color:#bae6fd">خدمات مصرفية آمنة وسريعة</p>
+</div>
+
+<!-- Login Form -->
+<div style="flex:1;padding:28px 24px;background:white">
+  <div style="text-align:center;margin-bottom:24px">
+    <h2 style="font-size:20px;font-weight:700;color:#111827">تسجيل الدخول</h2>
+    <p style="font-size:13px;color:#6b7280;margin-top:6px">أدخل بياناتك للوصول إلى حسابك</p>
+  </div>
+
+  <div style="margin-bottom:16px">
+    <label style="display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:6px">رقم الهاتف</label>
+    <div style="position:relative">
+      <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#9ca3af">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      </div>
+      <input type="tel" placeholder="77XXXXXXX" style="width:100%;padding:12px 40px 12px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;direction:ltr;text-align:right;outline:none;font-family:inherit" onfocus="this.style.borderColor='#0ea5e9';this.style.boxShadow='0 0 0 3px rgba(14,165,233,0.15)'" onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'">
+    </div>
+  </div>
+
+  <div style="margin-bottom:16px">
+    <label style="display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:6px">كلمة المرور</label>
+    <div style="position:relative">
+      <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#9ca3af">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+      <input type="password" placeholder="••••••••" style="width:100%;padding:12px 40px 12px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;outline:none;font-family:inherit" onfocus="this.style.borderColor='#0ea5e9';this.style.boxShadow='0 0 0 3px rgba(14,165,233,0.15)'" onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'">
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+      <input type="checkbox" style="width:16px;height:16px;border-radius:4px;accent-color:#0284c7">
+      <span style="font-size:13px;color:#6b7280">تذكرني</span>
+    </label>
+    <a href="#" style="font-size:13px;color:#0284c7;text-decoration:none;font-weight:500">نسيت كلمة المرور؟</a>
+  </div>
+
+  <button style="width:100%;padding:14px;background:#0284c7;color:white;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s" onmouseover="this.style.background='#0369a1'" onmouseout="this.style.background='#0284c7'">
+    تسجيل الدخول
+  </button>
+
+  <p style="text-align:center;font-size:13px;color:#6b7280;margin-top:20px">
+    ليس لديك حساب؟ <a href="#" style="color:#0284c7;font-weight:500;text-decoration:none">إنشاء حساب جديد</a>
+  </p>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- ====== PHONE 3: Transfer ====== -->
+<div>
+<p style="color:white;text-align:center;margin-bottom:12px;font-size:14px;font-weight:600">💸 تحويل أموال</p>
+<div class="phone-frame">
+<div class="phone-notch"></div>
+<div class="screen" style="padding:16px;padding-bottom:20px;background:#f9fafb">
+
+<div style="margin-bottom:16px">
+  <h1 style="font-size:20px;font-weight:700;color:#111827">تحويل أموال</h1>
+  <p style="font-size:13px;color:#6b7280;margin-top:4px">أرسل الأموال بسرعة وأمان</p>
+</div>
+
+<!-- From Account -->
+<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:12px">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+    <svg width="18" height="18" fill="none" stroke="#0284c7" stroke-width="2" viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+    <span style="font-size:14px;font-weight:600;color:#111827">من حساب</span>
+  </div>
+  <select style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:13px;color:#374151;background:#f9fafb;font-family:inherit;outline:none">
+    <option>محفظة - ٧٥٬٠٠٠٫٠٠ ﷼ - 967 777 1234</option>
+    <option>توفير - ٥٠٬٠٠٠٫٠٠ ﷼ - 967 777 5678</option>
+  </select>
+</div>
+
+<!-- To Account -->
+<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:12px">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+    <svg width="18" height="18" fill="none" stroke="#0284c7" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    <span style="font-size:14px;font-weight:600;color:#111827">إلى حساب</span>
+  </div>
+  <div style="position:relative">
+    <input type="text" placeholder="967XXXXXXXX" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;direction:ltr;text-align:right;outline:none;font-family:inherit" onfocus="this.style.borderColor='#0ea5e9';this.style.boxShadow='0 0 0 3px rgba(14,165,233,0.15)'" onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'">
+  </div>
+</div>
+
+<!-- Amount -->
+<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:12px">
+  <span style="font-size:14px;font-weight:600;color:#111827;display:block;margin-bottom:12px">المبلغ</span>
+  <div style="text-align:center;margin-bottom:12px">
+    <input type="number" placeholder="0.00" value="15000" style="width:100%;padding:16px;border:1px solid #d1d5db;border-radius:10px;font-size:28px;font-weight:700;text-align:center;direction:ltr;outline:none;font-family:inherit" onfocus="this.style.borderColor='#0ea5e9';this.style.boxShadow='0 0 0 3px rgba(14,165,233,0.15)'" onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'">
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px">
+    <button style="padding:8px 14px;border-radius:8px;background:#f3f4f6;color:#374151;font-size:12px;font-weight:500;border:none;cursor:pointer">١٠٬٠٠٠</button>
+    <button style="padding:8px 14px;border-radius:8px;background:#0284c7;color:white;font-size:12px;font-weight:500;border:none;cursor:pointer">٢٥٬٠٠٠</button>
+    <button style="padding:8px 14px;border-radius:8px;background:#f3f4f6;color:#374151;font-size:12px;font-weight:500;border:none;cursor:pointer">٥٠٬٠٠٠</button>
+    <button style="padding:8px 14px;border-radius:8px;background:#f3f4f6;color:#374151;font-size:12px;font-weight:500;border:none;cursor:pointer">١٠٠٬٠٠٠</button>
+  </div>
+</div>
+
+<!-- Summary -->
+<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:16px">
+  <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+    <span style="font-size:13px;color:#6b7280">المبلغ</span>
+    <span style="font-size:13px;font-weight:500">١٥٬٠٠٠٫٠٠ ﷼</span>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+    <span style="font-size:13px;color:#6b7280">الرسوم (0.5%)</span>
+    <span style="font-size:13px;font-weight:500">٧٥٫٠٠ ﷼</span>
+  </div>
+  <div style="border-top:1px solid #e5e7eb;padding-top:8px;display:flex;justify-content:space-between">
+    <span style="font-size:14px;font-weight:600">الإجمالي</span>
+    <span style="font-size:14px;font-weight:700;color:#0284c7">١٥٬٠٧٥٫٠٠ ﷼</span>
+  </div>
+</div>
+
+<button style="width:100%;padding:14px;background:#0284c7;color:white;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit">
+  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+  تأكيد التحويل
+</button>
+
+</div>
+</div>
+</div>
+
+<!-- ====== PHONE 4: Bills ====== -->
+<div>
+<p style="color:white;text-align:center;margin-bottom:12px;font-size:14px;font-weight:600">📄 دفع الفواتير</p>
+<div class="phone-frame">
+<div class="phone-notch"></div>
+<div class="screen" style="padding:16px;padding-bottom:20px;background:#f9fafb">
+
+<div style="margin-bottom:16px">
+  <h1 style="font-size:20px;font-weight:700;color:#111827">دفع الفواتير</h1>
+  <p style="font-size:13px;color:#6b7280;margin-top:4px">ادفع فواتيرك بسهولة وأمان</p>
+</div>
+
+<!-- Providers -->
+<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:12px">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+    <svg width="18" height="18" fill="none" stroke="#0284c7" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    <span style="font-size:14px;font-weight:600;color:#111827">مزود الخدمة</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <button style="display:flex;align-items:center;gap:8px;padding:12px;border-radius:10px;border:2px solid #0ea5e9;background:#f0f9ff;cursor:pointer">
+      <div style="width:36px;height:36px;border-radius:8px;background:#fef9c3;display:flex;align-items:center;justify-content:center">
+        <svg width="18" height="18" fill="none" stroke="#ca8a04" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <span style="font-size:12px;font-weight:500;color:#374151">كهرباء اليمن</span>
+    </button>
+    <button style="display:flex;align-items:center;gap:8px;padding:12px;border-radius:10px;border:2px solid #e5e7eb;background:white;cursor:pointer">
+      <div style="width:36px;height:36px;border-radius:8px;background:#dbeafe;display:flex;align-items:center;justify-content:center">
+        <svg width="18" height="18" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+      </div>
+      <span style="font-size:12px;font-weight:500;color:#374151">مياه Yemen</span>
+    </button>
+    <button style="display:flex;align-items:center;gap:8px;padding:12px;border-radius:10px;border:2px solid #e5e7eb;background:white;cursor:pointer">
+      <div style="width:36px;height:36px;border-radius:8px;background:#dcfce7;display:flex;align-items:center;justify-content:center">
+        <svg width="18" height="18" fill="none" stroke="#16a34a" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+      </div>
+      <span style="font-size:12px;font-weight:500;color:#374151">يمن نت</span>
+    </button>
+    <button style="display:flex;align-items:center;gap:8px;padding:12px;border-radius:10px;border:2px solid #e5e7eb;background:white;cursor:pointer">
+      <div style="width:36px;height:36px;border-radius:8px;background:#f3e8ff;display:flex;align-items:center;justify-content:center">
+        <svg width="18" height="18" fill="none" stroke="#9333ea" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      </div>
+      <span style="font-size:12px;font-weight:500;color:#374151">يمن موبايل</span>
+    </button>
+  </div>
+</div>
+
+<!-- Bill Details -->
+<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:12px">
+  <span style="font-size:14px;font-weight:600;color:#111827;display:block;margin-bottom:12px">تفاصيل الفاتورة</span>
+  <div style="margin-bottom:12px">
+    <label style="display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:6px">رقم الحساب / رقم العداد</label>
+    <input type="text" placeholder="أدخل رقم الحساب" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;direction:ltr;text-align:right;outline:none;font-family:inherit">
+  </div>
+  <div>
+    <label style="display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:6px">المبلغ (﷼)</label>
+    <input type="number" placeholder="0.00" value="5000" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;direction:ltr;text-align:right;outline:none;font-family:inherit">
+  </div>
+</div>
+
+<!-- Summary -->
+<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:16px">
+  <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+    <span style="font-size:13px;color:#6b7280">المبلغ</span>
+    <span style="font-size:13px;font-weight:500">٥٬٠٠٠٫٠٠ ﷼</span>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+    <span style="font-size:13px;color:#6b7280">الرسوم</span>
+    <span style="font-size:13px;font-weight:500;color:#16a34a">مجاني</span>
+  </div>
+  <div style="border-top:1px solid #e5e7eb;padding-top:8px;display:flex;justify-content:space-between">
+    <span style="font-size:14px;font-weight:600">الإجمالي</span>
+    <span style="font-size:14px;font-weight:700;color:#0284c7">٥٬٠٠٠٫٠٠ ﷼</span>
+  </div>
+</div>
+
+<button style="width:100%;padding:14px;background:#0284c7;color:white;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit">
+  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+  دفع الفاتورة
+</button>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>
