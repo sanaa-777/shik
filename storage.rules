@@ -1,0 +1,110 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ============================================================
+    // Helper Functions
+    // ============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserRole() {
+      return request.auth.token.role;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return getUserRole() == 'admin' || getUserRole() == 'super_admin';
+    }
+
+    // Validate image uploads
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    // Validate document uploads (for KYC)
+    function isDocument() {
+      return request.resource.contentType.matches('application/pdf')
+        || request.resource.contentType.matches('image/.*');
+    }
+
+    // Max file size: 5MB for avatars, 10MB for KYC docs
+    function isAvatarSize() {
+      return request.resource.size < 5 * 1024 * 1024;
+    }
+
+    function isKycDocSize() {
+      return request.resource.size < 10 * 1024 * 1024;
+    }
+
+    // ============================================================
+    // User Avatars
+    // ============================================================
+    match /avatars/{userId}/{allPaths=**} {
+      // Anyone authenticated can view avatars
+      allow read: if isAuthenticated();
+
+      // Users can upload/update their own avatar
+      // Must be an image under 5MB
+      allow create: if isAuthenticated()
+        && isOwner(userId)
+        && isImage()
+        && isAvatarSize();
+
+      allow update: if isAuthenticated()
+        && isOwner(userId)
+        && isImage()
+        && isAvatarSize();
+
+      // Users can delete their own avatar; admins can delete any
+      allow delete: if isAuthenticated() && (isOwner(userId) || isAdmin());
+    }
+
+    // ============================================================
+    // KYC Documents
+    // ============================================================
+    match /kyc/{userId}/{allPaths=**} {
+      // Users can read their own KYC docs; admins can read any
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+
+      // Users can upload their own KYC docs
+      // Must be PDF or image, under 10MB
+      allow create: if isAuthenticated()
+        && isOwner(userId)
+        && isDocument()
+        && isKycDocSize();
+
+      // Users can update (replace) their own KYC docs
+      allow update: if isAuthenticated()
+        && isOwner(userId)
+        && isDocument()
+        && isKycDocSize();
+
+      // Only admins can delete KYC docs (preserves audit trail)
+      allow delete: if isAuthenticated() && isAdmin();
+    }
+
+    // ============================================================
+    // Transaction Receipts / Attachments
+    // ============================================================
+    match /receipts/{transactionId}/{allPaths=**} {
+      // Authenticated users can read receipts
+      // (Cloud Functions will set metadata with userId for finer control)
+      allow read: if isAuthenticated();
+
+      // Only Cloud Functions (admin SDK) can write receipts
+      allow write: if false;
+    }
+
+    // ============================================================
+    // Default deny for all other paths
+    // ============================================================
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

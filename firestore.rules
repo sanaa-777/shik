@@ -1,0 +1,220 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================================
+    // Helper Functions
+    // ============================================================
+
+    // Check if the request is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Get the user's role from custom claims
+    function getUserRole() {
+      return request.auth.token.role;
+    }
+
+    // Role checks
+    function isCustomer() {
+      return getUserRole() == 'customer';
+    }
+
+    function isAgent() {
+      return getUserRole() == 'agent';
+    }
+
+    function isAdmin() {
+      return getUserRole() == 'admin';
+    }
+
+    function isSuperAdmin() {
+      return getUserRole() == 'super_admin';
+    }
+
+    function isAnyAdmin() {
+      return isAdmin() || isSuperAdmin();
+    }
+
+    // Check if user owns the resource
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Validate amount is a positive integer (smallest currency unit)
+    function isValidAmount(amount) {
+      return amount is int && amount > 0;
+    }
+
+    // Validate string fields
+    function isNonEmptyString(field) {
+      return field is string && field.size() > 0;
+    }
+
+    // ============================================================
+    // Users Collection
+    // ============================================================
+    match /users/{userId} {
+      // Users can read their own profile
+      // Admins can read any profile
+      allow read: if isAuthenticated() && (isOwner(userId) || isAnyAdmin());
+
+      // User profiles are only created by Cloud Functions (onUserCreate trigger)
+      allow create: if false;
+
+      // Users can update their own profile (limited fields)
+      // Admins can update any profile
+      allow update: if isAuthenticated() && (
+        (isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'status', 'createdAt', 'uid']))
+        || isAnyAdmin()
+      );
+
+      // Only super_admin can delete user profiles
+      allow delete: if isAuthenticated() && isSuperAdmin();
+
+      // Subcollection: KYC documents
+      match /kyc/{document} {
+        allow read: if isAuthenticated() && (isOwner(userId) || isAnyAdmin());
+        // KYC docs are created/updated via Cloud Functions or by the user
+        allow create: if isAuthenticated() && (isOwner(userId) || isAnyAdmin());
+        allow update: if isAuthenticated() && (isOwner(userId) || isAnyAdmin());
+        allow delete: if isAuthenticated() && isSuperAdmin();
+      }
+    }
+
+    // ============================================================
+    // Accounts Collection (Wallet / Bank Accounts)
+    // ============================================================
+    match /accounts/{accountId} {
+      // Users can read their own accounts
+      // Agents can read accounts they're assigned to
+      // Admins can read any account
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid
+        || (isAgent() && resource.data.agentId == request.auth.uid)
+        || isAnyAdmin()
+      );
+
+      // Account creation is only done by Cloud Functions
+      allow create: if false;
+
+      // Balance updates are ONLY allowed via Cloud Functions (service account)
+      // Users can update non-balance fields (e.g., nickname, preferences)
+      allow update: if isAuthenticated() && (
+        // Admins can update anything
+        isAnyAdmin()
+        ||
+        // Users can update their own account but NOT balance or status
+        (
+          resource.data.userId == request.auth.uid
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['balance', 'reservedBalance', 'status', 'userId', 'createdAt'])
+        )
+      );
+
+      // Only super_admin can delete accounts
+      allow delete: if isAuthenticated() && isSuperAdmin();
+
+      // Subcollection: account statements
+      match /statements/{statementId} {
+        allow read: if isAuthenticated() && (
+          get(/databases/$(database)/documents/accounts/$(accountId)).data.userId == request.auth.uid
+          || isAnyAdmin()
+        );
+        allow write: if false; // Only via Cloud Functions
+      }
+    }
+
+    // ============================================================
+    // Transactions Collection
+    // ============================================================
+    match /transactions/{transactionId} {
+      // Users can read their own transactions
+      // Admins can read any transaction
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid
+        || (resource.data.fromAccountId != null &&
+            get(/databases/$(database)/documents/accounts/$(resource.data.fromAccountId)).data.userId == request.auth.uid)
+        || (resource.data.toAccountId != null &&
+            get(/databases/$(database)/documents/accounts/$(resource.data.toAccountId)).data.userId == request.auth.uid)
+        || isAnyAdmin()
+      );
+
+      // Transactions are ONLY created, updated, or deleted via Cloud Functions
+      // This is a critical security rule - never allow client-side writes
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ============================================================
+    // Notifications Collection
+    // ============================================================
+    match /notifications/{notificationId} {
+      // Users can read their own notifications
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+
+      // Notifications are created by Cloud Functions
+      allow create: if false;
+
+      // Users can mark their own notifications as read
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt'])
+      );
+
+      // Users can delete their own notifications
+      // Admins can delete any notification
+      allow delete: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAnyAdmin()
+      );
+    }
+
+    // ============================================================
+    // Audit Logs Collection
+    // ============================================================
+    match /auditLogs/{logId} {
+      // Only admins can read audit logs
+      allow read: if isAuthenticated() && isAnyAdmin();
+
+      // Audit logs are ONLY created by Cloud Functions
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ============================================================
+    // System Config Collection
+    // ============================================================
+    match /config/{configId} {
+      // Anyone authenticated can read config (e.g., fee schedules, limits)
+      allow read: if isAuthenticated();
+
+      // Only super_admin can write config
+      allow write: if isAuthenticated() && isSuperAdmin();
+    }
+
+    // ============================================================
+    // Bills / Payees Collection
+    // ============================================================
+    match /bills/{billId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAnyAdmin()
+      );
+      allow create: if isAuthenticated() && (isCustomer() || isAgent() || isAnyAdmin());
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAnyAdmin()
+      );
+      allow delete: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAnyAdmin()
+      );
+    }
+
+    // ============================================================
+    // Default deny for all other paths
+    // ============================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
