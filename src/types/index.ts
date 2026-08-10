@@ -124,12 +124,14 @@ export interface TransferFormData {
   fromAccountId: string
   toAccountNumber: string
   amount: number
+  currency?: string
   description?: string
+  idempotencyKey?: string
 }
 
 export interface BillPaymentFormData {
   accountId: string
-  providerId: string
+  billerId: string
   accountNumber: string
   amount: number
 }

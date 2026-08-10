@@ -8,7 +8,7 @@ import { HttpsError } from "firebase-functions/v2/https";
 
 export interface TransferInput {
   fromAccountId: string;
-  toAccountId: string;
+  toAccountNumber: string;
   amount: number; // smallest currency unit
   currency: string;
   description?: string;
@@ -97,16 +97,16 @@ export function validateTransferInput(data: unknown): TransferInput {
     throwValidation("fromAccountId contains invalid characters.");
   }
 
-  // toAccountId
-  if (!input.toAccountId || typeof input.toAccountId !== "string") {
-    throwValidation("toAccountId is required and must be a string.");
+  // toAccountNumber
+  if (!input.toAccountNumber || typeof input.toAccountNumber !== "string") {
+    throwValidation("toAccountNumber is required and must be a string.");
   }
-  if (!UUID_REGEX.test(input.toAccountId)) {
-    throwValidation("toAccountId contains invalid characters.");
+  if (!/^[0-9]{9,16}$/.test(input.toAccountNumber)) {
+    throwValidation("toAccountNumber must be 9-16 digits.");
   }
 
-  // Cannot transfer to same account
-  if (input.fromAccountId === input.toAccountId) {
+  // Cannot transfer to same account number
+  if (input.fromAccountId === input.toAccountNumber) {
     throwValidation("Cannot transfer to the same account.");
   }
 
@@ -158,7 +158,7 @@ export function validateTransferInput(data: unknown): TransferInput {
 
   return {
     fromAccountId: input.fromAccountId as string,
-    toAccountId: input.toAccountId as string,
+    toAccountNumber: input.toAccountNumber as string,
     amount: input.amount as number,
     currency,
     description: input.description as string | undefined,

@@ -25,7 +25,7 @@ const providers = [
 
 const billSchema = z.object({
   accountId: z.string().min(1, 'اختر الحساب'),
-  providerId: z.string().min(1, 'اختر مزود الخدمة'),
+  billerId: z.string().min(1, 'اختر مزود الخدمة'),
   accountNumber: z.string().min(5, 'رقم الحساب غير صالح'),
   amount: z.number().min(100, 'الحد الأدنى 100 ﷼').max(500000, 'الحد الأقصى 500,000 ﷼'),
 })
@@ -76,7 +76,7 @@ export function BillsPage() {
 
     const result = await payBill({
       accountId: data.accountId,
-      providerId: data.providerId,
+      billerId: data.billerId,
       accountNumber: data.accountNumber,
       amount: data.amount,
     })
@@ -89,9 +89,9 @@ export function BillsPage() {
     }
   }
 
-  const handleProviderSelect = (providerId: string) => {
-    setSelectedProvider(providerId)
-    setValue('providerId', providerId)
+  const handleProviderSelect = (billerId: string) => {
+    setSelectedProvider(billerId)
+    setValue('billerId', billerId)
   }
 
   if (loading) {
@@ -138,8 +138,8 @@ export function BillsPage() {
                 </button>
               ))}
             </div>
-            {errors.providerId && (
-              <p className="text-sm text-danger-600 mt-2">{errors.providerId.message}</p>
+            {errors.billerId && (
+              <p className="text-sm text-danger-600 mt-2">{errors.billerId.message}</p>
             )}
           </CardContent>
         </Card>

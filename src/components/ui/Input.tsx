@@ -7,10 +7,11 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   helperText?: string
   icon?: React.ReactNode
   fullWidth?: boolean
+  textAlign?: 'left' | 'center' | 'right'
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, helperText, icon, fullWidth = true, id, ...props }, ref) => {
+  ({ className, label, error, helperText, icon, fullWidth = true, textAlign, id, ...props }, ref) => {
     const inputId = id || label?.replace(/\s/g, '-').toLowerCase()
 
     return (
@@ -36,6 +37,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               {
                 'border-danger-500 focus:border-danger-500 focus:ring-danger-500/20': error,
                 'pr-10': icon,
+                'text-left': textAlign === 'left',
+                'text-center': textAlign === 'center',
+                'text-right': textAlign === 'right',
               },
               className
             )}

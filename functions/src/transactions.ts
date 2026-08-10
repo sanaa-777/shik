@@ -23,7 +23,7 @@ export const transferMoney = onCall(
 
     logger.audit("TRANSFER_INITIATED", callerUid, {
       fromAccountId: input.fromAccountId,
-      toAccountId: input.toAccountId,
+      toAccountNumber: input.toAccountNumber,
       amount: input.amount,
       currency: input.currency,
     });
@@ -54,10 +54,24 @@ export const transferMoney = onCall(
 
     const db = admin.firestore();
 
+    // Look up destination account by account number
+    const toAccountQuery = await db
+      .collection("accounts")
+      .where("accountNumber", "==", input.toAccountNumber)
+      .where("status", "==", "active")
+      .limit(1)
+      .get();
+
+    if (toAccountQuery.empty) {
+      throw new HttpsError("not-found", "Destination account not found or inactive.");
+    }
+
+    const toAccountId = toAccountQuery.docs[0].id;
+
     try {
       const result = await db.runTransaction(async (tx) => {
         const fromRef = db.collection("accounts").doc(input.fromAccountId);
-        const toRef = db.collection("accounts").doc(input.toAccountId);
+        const toRef = db.collection("accounts").doc(toAccountId);
 
         // Read both accounts within the transaction
         const [fromDoc, toDoc] = await Promise.all([
@@ -134,12 +148,11 @@ export const transferMoney = onCall(
         const transactionData = {
           type: "transfer",
           fromAccountId: input.fromAccountId,
-          toAccountId: input.toAccountId,
-          amount: input.amount,
+          toAccountId: toAccountId,\n          amount: input.amount,
           currency: input.currency,
           status: "completed",
           userId: callerUid,
-          description: input.description || `Transfer to ${input.toAccountId}`,
+          description: input.description || `Transfer to ${input.toAccountNumber}`,
           idempotencyKey: input.idempotencyKey || null,
           fromBalanceBefore: fromAccount.balance,
           fromBalanceAfter: fromAccount.balance - input.amount,
@@ -158,7 +171,7 @@ export const transferMoney = onCall(
       logger.audit("TRANSFER_COMPLETED", callerUid, {
         transactionId: result.transactionId,
         fromAccountId: input.fromAccountId,
-        toAccountId: input.toAccountId,
+        toAccountId: toAccountId,
         amount: input.amount,
         currency: input.currency,
       });
@@ -174,7 +187,7 @@ export const transferMoney = onCall(
       logger.error("Transfer failed", {
         callerUid,
         fromAccountId: input.fromAccountId,
-        toAccountId: input.toAccountId,
+        toAccountNumber: input.toAccountNumber,
         amount: input.amount,
         error: (error as Error).message,
       });
