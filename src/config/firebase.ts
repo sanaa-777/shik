@@ -3,7 +3,8 @@ import { getAuth, connectAuthEmulator } from 'firebase/auth'
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions'
 import { getStorage, connectStorageEmulator } from 'firebase/storage'
-import { getMessaging, isSupported } from 'firebase/messaging'
+import { getMessaging, isSupported as isMessagingSupported } from 'firebase/messaging'
+import { getAnalytics, isSupported as isAnalyticsSupported } from 'firebase/analytics'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -22,9 +23,18 @@ export const db = getFirestore(app)
 export const functions = getFunctions(app)
 export const storage = getStorage(app)
 
+// Initialize Analytics only in a browser with a valid measurement ID.
+export const getAnalyticsInstance = async () => {
+  if (typeof window === 'undefined' || !firebaseConfig.measurementId) {
+    return null
+  }
+  const supported = await isAnalyticsSupported()
+  return supported ? getAnalytics(app) : null
+}
+
 // Initialize messaging only if supported
 export const getMessagingInstance = async () => {
-  const supported = await isSupported()
+  const supported = await isMessagingSupported()
   if (supported) {
     return getMessaging(app)
   }
