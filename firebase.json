@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "shik-ye",
     "public": "dist",
     "ignore": [
       "firebase.json",
