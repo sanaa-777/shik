@@ -30,22 +30,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setError: (error) => set({ error }),
 
   init: () => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      set({ user, loading: true })
+    try {
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        set({ user, loading: true })
 
-      if (user) {
-        const result = await getUserProfile(user.uid)
-        if (result.success && result.data) {
-          set({ profile: result.data, loading: false })
-        } else {
+        try {
+          if (user) {
+            const result = await getUserProfile(user.uid)
+            set({
+              profile: result.success && result.data ? result.data : null,
+              loading: false,
+            })
+          } else {
+            set({ profile: null, loading: false })
+          }
+        } catch {
           set({ profile: null, loading: false })
         }
-      } else {
-        set({ profile: null, loading: false })
-      }
-    })
+      }, () => {
+        set({ user: null, profile: null, loading: false })
+      })
 
-    return unsubscribe
+      return unsubscribe
+    } catch {
+      set({ user: null, profile: null, loading: false })
+      return () => undefined
+    }
   },
 
   isAdmin: () => {

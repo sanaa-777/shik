@@ -39,8 +39,9 @@ export function LoginPage() {
     }
   }
 
-  if (redirectLoading) return null
-
+  // Keep the form visible while Firebase finishes restoring the session.
+  // Returning null here made the whole login panel look like a white screen
+  // when the Auth listener was delayed by the network or browser state.
   return (
     <Card variant="elevated" padding="lg">
       <div className="text-center mb-8">
