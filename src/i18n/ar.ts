@@ -1,7 +1,7 @@
 export const ar = {
   // Common
   app: {
-    name: 'بنك رقمي',
+    name: 'شيك - shik',
     version: '1.0.0',
   },
   common: {

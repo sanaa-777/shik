@@ -10,7 +10,7 @@ export function AuthLayout() {
           <div className="w-20 h-20 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-8">
             <Wallet className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-4">بنك رقمي</h1>
+          <h1 className="text-4xl font-bold text-white mb-4">شيك - shik</h1>
           <p className="text-xl text-primary-100 mb-8">
             خدمات مصرفية آمنة وسريعة في متناول يدك
           </p>
@@ -43,7 +43,7 @@ export function AuthLayout() {
             <div className="w-16 h-16 rounded-2xl bg-primary-600 flex items-center justify-center mx-auto mb-4">
               <Wallet className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">بنك رقمي</h1>
+            <h1 className="text-2xl font-bold text-gray-900">شيك - shik</h1>
           </div>
 
           <Outlet />

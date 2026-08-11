@@ -1,8 +1,8 @@
-# Digital Bank — Architecture Document
+# شيك - shik — Architecture Document
 
 ## 1. Overview
 
-Full-stack digital banking platform built with React + TypeScript frontend and Firebase backend. Designed for production readiness and future Flutter mobile app integration.
+Full-stack شيك - shik platform built with React + TypeScript frontend and Firebase backend. Designed for production readiness and future Flutter mobile app integration.
 
 ## 2. Tech Stack
 
@@ -232,7 +232,7 @@ src/services/
 ## 9. Project Structure
 
 ```
-digital-bank/
+shik/
 ├── public/
 ├── src/
 │   ├── components/        # Reusable UI components

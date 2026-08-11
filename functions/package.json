@@ -1,7 +1,7 @@
 {
-  "name": "digital-bank-functions",
+  "name": "shik-functions",
   "version": "1.0.0",
-  "description": "Firebase Cloud Functions for Digital Banking App",
+  "description": "Firebase Cloud Functions for شيك - shik",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",

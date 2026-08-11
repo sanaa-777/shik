@@ -1,4 +1,4 @@
-# 🏦 بنك رقمي - Digital Banking Platform
+# 🏦 شيك - shik
 
 تطبيق بنكي رقمي متكامل مبني باستخدام React + Firebase Cloud Functions.
 
@@ -80,7 +80,7 @@ firebase deploy --only firestore:rules,storage
 ## 📁 هيكل المشروع
 
 ```
-digital-bank/
+shik/
 ├── src/                      # الكود المصدري للواجهة الأمامية
 │   ├── components/          # المكونات
 │   │   ├── layout/         # مكونات التخطيط
