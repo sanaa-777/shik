@@ -24,9 +24,9 @@ jobs:
         run: npm run build
 
       - name: Deploy to Firebase Hosting
-        uses: w9jds/firebase-action@v13.7.0
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          args: deploy --only hosting
-        env:
-          GCP_SA_KEY: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          PROJECT_ID: shik-4791f
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: shik-4791f
