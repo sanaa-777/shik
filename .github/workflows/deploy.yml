@@ -30,17 +30,6 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Deploy to Firebase Hosting
-        id: deploy
-        run: |
-          firebase deploy --only hosting --project shik-4791f 2>&1 | tee /tmp/deploy.log
+        run: firebase deploy --only hosting --project shik-4791f
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
-        continue-on-error: true
-
-      - name: Show deploy log
-        if: steps.deploy.outcome == 'failure'
-        run: cat /tmp/deploy.log
-
-      - name: Fail if deploy failed
-        if: steps.deploy.outcome == 'failure'
-        run: exit 1
