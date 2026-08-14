@@ -6,7 +6,7 @@ import {
   updateProfile,
   type User,
 } from 'firebase/auth'
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
 import { auth, db } from '@/config/firebase'
 import type { UserProfile, LoginFormData, RegisterFormData, ApiResponse } from '@/types'
 
@@ -36,30 +36,9 @@ export async function register(data: RegisterFormData): Promise<ApiResponse<User
     // Update display name
     await updateProfile(credential.user, { displayName: data.displayName })
 
-    // Create user profile in Firestore
-    await setDoc(doc(db, 'users', credential.user.uid), {
-      displayName: data.displayName,
-      phone: data.phone,
-      email: data.email || null,
-      role: 'customer',
-      status: 'active',
-      kyc: { verified: false, level: 'none', documents: [] },
-      settings: { language: 'ar', notifications: true, biometric: false },
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    })
-
-    // Create default wallet account
-    await setDoc(doc(db, 'accounts', `${credential.user.uid}_wallet`), {
-      userId: credential.user.uid,
-      type: 'wallet',
-      currency: 'YER',
-      balance: 0,
-      status: 'active',
-      accountNumber: generateAccountNumber(),
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    })
+    // Profile and wallet creation is handled by the Firebase Auth trigger.
+    // Keeping these privileged writes out of the browser prevents registration
+    // from conflicting with Firestore security rules and avoids partial signups.
 
     return { success: true, data: credential.user, message: 'تم إنشاء الحساب بنجاح' }
   } catch (error: unknown) {
@@ -132,12 +111,6 @@ export async function getUserProfile(userId: string): Promise<ApiResponse<UserPr
 /**
  * Generate account number
  */
-function generateAccountNumber(): string {
-  const prefix = '967'
-  const random = Math.floor(Math.random() * 10000000).toString().padStart(7, '0')
-  return prefix + random
-}
-
 /**
  * Get user-friendly auth error message
  */

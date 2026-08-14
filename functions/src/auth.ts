@@ -29,29 +29,21 @@ export const onUserCreate = beforeUserCreated(async (event) => {
     // Use a transaction to ensure both documents are created atomically
     await db.runTransaction(async (tx) => {
       const userRef = db.collection("users").doc(uid);
-      const accountRef = db.collection("accounts").doc();
+      const accountRef = db.collection("accounts").doc(`${uid}_wallet`);
 
       // Create user profile
       tx.set(userRef, {
         uid,
         email,
         displayName,
-        phoneNumber,
+        phone: phoneNumber,
         photoURL,
         role: "customer", // Default role
         status: "active",
         createdAt: now,
         updatedAt: now,
-        kycStatus: "pending",
-        preferences: {
-          currency: "USD",
-          language: "en",
-          notifications: {
-            email: true,
-            push: true,
-            sms: false,
-          },
-        },
+        kyc: { verified: false, level: "none", documents: [] },
+        settings: { language: "ar", notifications: true, biometric: false },
       });
 
       // Create default wallet account
@@ -59,7 +51,7 @@ export const onUserCreate = beforeUserCreated(async (event) => {
         userId: uid,
         accountNumber: generateAccountNumber(),
         type: "wallet",
-        currency: "USD",
+        currency: "YER",
         balance: 0,
         reservedBalance: 0,
         status: "active",
@@ -74,13 +66,13 @@ export const onUserCreate = beforeUserCreated(async (event) => {
       });
     });
 
-    // Set default custom claims (role) on the Auth user
-    await admin.auth().setCustomUserClaims(uid, { role: "customer" });
-
     logger.audit("USER_CREATED", uid, {
       email,
       defaultRole: "customer",
     });
+
+    // beforeUserCreated can attach claims atomically to the new Auth user.
+    return { customClaims: { role: "customer" } };
   } catch (error) {
     logger.error("Failed to create user profile", {
       uid,

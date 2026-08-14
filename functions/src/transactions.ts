@@ -148,7 +148,8 @@ export const transferMoney = onCall(
         const transactionData = {
           type: "transfer",
           fromAccountId: input.fromAccountId,
-          toAccountId: toAccountId,\n          amount: input.amount,
+          toAccountId: toAccountId,
+          amount: input.amount,
           currency: input.currency,
           status: "completed",
           userId: callerUid,

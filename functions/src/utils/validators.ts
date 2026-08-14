@@ -69,7 +69,7 @@ export function requireRole(
   context: { auth?: { uid?: string; token?: Record<string, unknown> } },
   roles: readonly string[]
 ): void {
-  const uid = requireAuth(context);
+  requireAuth(context);
   const userRole = context.auth!.token?.role as string | undefined;
 
   if (!userRole || !roles.includes(userRole)) {
