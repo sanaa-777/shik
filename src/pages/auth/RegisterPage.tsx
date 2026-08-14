@@ -45,8 +45,7 @@ export function RegisterPage() {
     }
   }
 
-  if (redirectLoading) return null
-
+  // Keep the registration form visible while Firebase restores the session.
   return (
     <Card variant="elevated" padding="lg">
       <div className="text-center mb-8">
