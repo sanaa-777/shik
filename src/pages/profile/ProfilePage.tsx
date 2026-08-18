@@ -8,8 +8,10 @@ import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { useAuthStore } from '@/store/auth.store'
 import { doc, updateDoc } from 'firebase/firestore'
-import { db } from '@/config/firebase'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { db, storage } from '@/config/firebase'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 const profileSchema = z.object({
   displayName: z.string().min(3, 'الاسم يجب أن يكون 3 أحرف على الأقل'),
@@ -21,7 +23,9 @@ type ProfileForm = z.infer<typeof profileSchema>
 
 export function ProfilePage() {
   const { profile, user } = useAuthStore()
+  const navigate = useNavigate()
   const [editing, setEditing] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
 
   const {
     register,
@@ -35,6 +39,28 @@ export function ProfilePage() {
       address: profile?.address || '',
     },
   })
+
+  const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file || !user) return
+    if (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024) {
+      toast.error('اختر صورة أقل من 5MB')
+      return
+    }
+    setUploadingAvatar(true)
+    try {
+      const avatarRef = ref(storage, `avatars/${user.uid}/profile`)
+      await uploadBytes(avatarRef, file, { contentType: file.type })
+      const avatar = await getDownloadURL(avatarRef)
+      await updateDoc(doc(db, 'users', user.uid), { avatar, updatedAt: new Date() })
+      toast.success('تم تحديث الصورة الشخصية')
+    } catch {
+      toast.error('تعذر رفع الصورة الشخصية')
+    } finally {
+      setUploadingAvatar(false)
+      event.target.value = ''
+    }
+  }
 
   const onSubmit = async (data: ProfileForm) => {
     if (!user) return
@@ -73,9 +99,10 @@ export function ProfilePage() {
                 <User className="w-12 h-12 text-primary-600" />
               )}
             </div>
-            <button className="absolute bottom-0 left-0 w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center hover:bg-primary-700">
+            <label className="absolute bottom-0 left-0 w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center hover:bg-primary-700 cursor-pointer" aria-label="تغيير الصورة الشخصية">
               <Camera className="w-4 h-4" />
-            </button>
+              <input type="file" accept="image/*" className="sr-only" onChange={handleAvatarChange} disabled={uploadingAvatar} />
+            </label>
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900">{profile.displayName}</h2>
@@ -184,14 +211,14 @@ export function ProfilePage() {
               <p className="font-medium">كلمة المرور</p>
               <p className="text-sm text-gray-500">آخر تغيير: منذ 30 يوم</p>
             </div>
-            <Button variant="outline" size="sm">تغيير</Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/change-password')}>تغيير</Button>
           </div>
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">المصادقة الثنائية</p>
               <p className="text-sm text-gray-500">حماية إضافية لحسابك</p>
             </div>
-            <Button variant="outline" size="sm">تفعيل</Button>
+            <Button variant="outline" size="sm" onClick={() => toast('المصادقة الثنائية ستكون متاحة بعد ربط مزود SMS')}>تفعيل</Button>
           </div>
         </CardContent>
       </Card>

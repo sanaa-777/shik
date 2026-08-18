@@ -11,6 +11,7 @@ import { AppLayout, AuthLayout } from '@/components/layout'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
+import { ChangePasswordPage } from '@/pages/auth/ChangePasswordPage'
 
 // App pages
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
@@ -19,6 +20,7 @@ import { BillsPage } from '@/pages/bills/BillsPage'
 import { HistoryPage } from '@/pages/history/HistoryPage'
 import { ProfilePage } from '@/pages/profile/ProfilePage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
+import { NotificationsPage } from '@/pages/NotificationsPage'
 
 // Admin pages
 import { AdminDashboard } from '@/pages/admin/AdminDashboard'
@@ -67,9 +69,10 @@ function App() {
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/deposit" element={<FeaturePage kind="deposit" />} />
             <Route path="/withdraw" element={<FeaturePage kind="withdraw" />} />
-            <Route path="/change-password" element={<FeaturePage kind="change-password" />} />
+            <Route path="/change-password" element={<ChangePasswordPage />} />
             <Route path="/support" element={<FeaturePage kind="support" />} />
 
             {/* Admin routes */}

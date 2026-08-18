@@ -2,15 +2,28 @@ import { Globe, Bell, Shield, Moon, Smartphone, HelpCircle, FileText, LogOut } f
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { useAuthStore } from '@/store/auth.store'
+import { doc, updateDoc } from 'firebase/firestore'
+import { db } from '@/config/firebase'
 import { useAppStore } from '@/store/app.store'
 import { logout } from '@/services/auth.service'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 
 export function SettingsPage() {
-  const { profile } = useAuthStore()
-  const { theme, toggleTheme } = useAppStore()
+  const { profile, user } = useAuthStore()
+  const { theme, toggleTheme, language, setLanguage } = useAppStore()
   const navigate = useNavigate()
+
+  const updateSettings = async (changes: { language?: 'ar' | 'en'; notifications?: boolean }) => {
+    if (!user) return
+    try {
+      await updateDoc(doc(db, 'users', user.uid), { settings: { ...profile?.settings, ...changes }, updatedAt: new Date() })
+      if (changes.language) setLanguage(changes.language)
+      toast.success('تم حفظ الإعدادات')
+    } catch {
+      toast.error('تعذر حفظ الإعدادات')
+    }
+  }
 
   const handleLogout = async () => {
     const result = await logout()
@@ -27,8 +40,8 @@ export function SettingsPage() {
         {
           icon: Globe,
           label: 'اللغة',
-          value: profile?.settings.language === 'ar' ? 'العربية' : 'English',
-          action: () => {},
+          value: language === 'ar' ? 'العربية' : 'English',
+          action: () => void updateSettings({ language: language === 'ar' ? 'en' : 'ar' }),
         },
         {
           icon: Moon,
@@ -40,7 +53,7 @@ export function SettingsPage() {
           icon: Bell,
           label: 'الإشعارات',
           value: profile?.settings.notifications ? 'مفعّلة' : 'معطّلة',
-          action: () => {},
+          action: () => void updateSettings({ notifications: !profile?.settings.notifications }),
         },
       ],
     },
