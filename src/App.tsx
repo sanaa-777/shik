@@ -26,6 +26,7 @@ import { AdminUsersPage } from '@/pages/admin/AdminUsersPage'
 
 // Other
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { FeaturePage } from '@/pages/FeaturePage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,6 +54,8 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/terms" element={<FeaturePage kind="terms" />} />
+            <Route path="/privacy" element={<FeaturePage kind="privacy" />} />
           </Route>
 
           {/* Protected routes */}
@@ -64,6 +67,10 @@ function App() {
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/deposit" element={<FeaturePage kind="deposit" />} />
+            <Route path="/withdraw" element={<FeaturePage kind="withdraw" />} />
+            <Route path="/change-password" element={<FeaturePage kind="change-password" />} />
+            <Route path="/support" element={<FeaturePage kind="support" />} />
 
             {/* Admin routes */}
             <Route path="/admin" element={<AdminDashboard />} />
