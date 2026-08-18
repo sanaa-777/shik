@@ -51,12 +51,22 @@ cp .env.example .env
 # تشغيل التطبيق محلياً
 npm run dev
 
-# تشغيل Firebase Emulators
-firebase emulators:start
+# تشغيل Auth وFirestore وCloud Functions معًا
+npm run firebase:emulators
 
-# تشغيل Cloud Functions محلياً
+# ربط الواجهة بالمحاكيات في جلسة تطوير محلية
+# غيّر VITE_USE_FIREBASE_EMULATORS إلى true في .env ثم شغّل:
+npm run dev
+
+# تشغيل Cloud Functions وحدها
 npm run functions:serve
 ```
+
+## 🔌 تكامل الواجهة مع Cloud Functions
+
+تستخدم الواجهة `httpsCallable` لاستدعاء `transferMoney` و`processBillPayment` و`setUserRole`، بينما تنشئ `onUserCreate` ملف المستخدم ومحفظته الافتراضية تلقائيًا. تم توحيد منطقة الدوال على `us-central1`، كما تتطابق عملات الواجهة والدوال مع `YER` و`USD` و`SAR`.
+
+للاختبار المحلي الكامل، شغّل `npm run firebase:emulators`، ثم فعّل `VITE_USE_FIREBASE_EMULATORS=true` في ملف `.env`. لا تفعّل هذا الخيار في بيئة الإنتاج. تتضمن `firebase.json` منافذ Auth `9099` وFirestore `8080` وFunctions `5001` وواجهة المحاكيات `4000`.
 
 ## 🚀 النشر
 

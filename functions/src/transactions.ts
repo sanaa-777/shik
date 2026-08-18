@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { FieldValue } from "firebase-admin/firestore";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { createLogger } from "./utils/logger";
 import {
@@ -134,13 +135,13 @@ export const transferMoney = onCall(
 
         // Perform atomic balance updates
         tx.update(fromRef, {
-          balance: admin.firestore.FieldValue.increment(-input.amount),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          balance: FieldValue.increment(-input.amount),
+          updatedAt: FieldValue.serverTimestamp(),
         });
 
         tx.update(toRef, {
-          balance: admin.firestore.FieldValue.increment(input.amount),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          balance: FieldValue.increment(input.amount),
+          updatedAt: FieldValue.serverTimestamp(),
         });
 
         // Create transaction record
@@ -160,8 +161,8 @@ export const transferMoney = onCall(
           toBalanceBefore: toAccount.balance,
           toBalanceAfter: toAccount.balance + input.amount,
           reversed: false,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          createdAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
         };
 
         tx.set(txRef, transactionData);
@@ -270,8 +271,8 @@ export const processBillPayment = onCall(
 
         // Deduct from account
         tx.update(accountRef, {
-          balance: admin.firestore.FieldValue.increment(-input.amount),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          balance: FieldValue.increment(-input.amount),
+          updatedAt: FieldValue.serverTimestamp(),
         });
 
         // Create transaction record
@@ -290,8 +291,8 @@ export const processBillPayment = onCall(
           fromBalanceBefore: account.balance,
           fromBalanceAfter: account.balance - input.amount,
           reversed: false,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          createdAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
         });
 
         return { transactionId: txRef.id };
@@ -375,7 +376,7 @@ export const onTransactionCreate = onDocumentCreated(
         body: notificationBody,
         transactionId,
         read: false,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: FieldValue.serverTimestamp(),
       });
 
       logger.info("Notification created for transaction", {
@@ -391,7 +392,7 @@ export const onTransactionCreate = onDocumentCreated(
         type: transaction.type,
         amount: transaction.amount,
         currency: transaction.currency,
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        timestamp: FieldValue.serverTimestamp(),
       });
     } catch (error) {
       logger.error("Failed to process transaction notification", {

@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import { FieldValue } from "firebase-admin/firestore";
 import { beforeUserCreated } from "firebase-functions/v2/identity";
 import { createLogger } from "./utils/logger";
 
@@ -21,7 +22,7 @@ export const onUserCreate = beforeUserCreated(async (event) => {
   }
 
   const db = admin.firestore();
-  const now = admin.firestore.FieldValue.serverTimestamp();
+  const now = FieldValue.serverTimestamp();
 
   logger.info("Creating user profile and default wallet", { uid, email });
 

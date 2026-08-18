@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import { FieldValue } from "firebase-admin/firestore";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { createLogger } from "./utils/logger";
 import {
@@ -52,7 +53,7 @@ export const setUserRole = onCall(
       // Update Firestore user document
       await db.collection("users").doc(targetUserId).update({
         role,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
 
       logger.audit("SET_USER_ROLE_SUCCESS", callerUid, {
@@ -147,13 +148,13 @@ export const reverseTransaction = onCall(
 
           // Reverse: add back to sender, deduct from receiver
           tx.update(fromRef, {
-            balance: admin.firestore.FieldValue.increment(amount),
-            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            balance: FieldValue.increment(amount),
+            updatedAt: FieldValue.serverTimestamp(),
           });
 
           tx.update(toRef, {
-            balance: admin.firestore.FieldValue.increment(-amount),
-            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            balance: FieldValue.increment(-amount),
+            updatedAt: FieldValue.serverTimestamp(),
           });
         }
 
@@ -170,8 +171,8 @@ export const reverseTransaction = onCall(
           }
 
           tx.update(fromRef, {
-            balance: admin.firestore.FieldValue.increment(amount),
-            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            balance: FieldValue.increment(amount),
+            updatedAt: FieldValue.serverTimestamp(),
           });
         }
 
@@ -179,9 +180,9 @@ export const reverseTransaction = onCall(
         tx.update(txRef, {
           reversed: true,
           reversedBy: callerUid,
-          reversedAt: admin.firestore.FieldValue.serverTimestamp(),
+          reversedAt: FieldValue.serverTimestamp(),
           reversalReason: reason,
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
         });
 
         // Create a reversal transaction record
@@ -197,7 +198,7 @@ export const reverseTransaction = onCall(
           userId: txData.userId,
           description: `Reversal of transaction ${transactionId}: ${reason}`,
           reversedBy: callerUid,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          createdAt: FieldValue.serverTimestamp(),
         });
 
         return { reversalTransactionId: reversalRef.id };

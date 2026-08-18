@@ -12,6 +12,8 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "functions:serve": "cd functions && npm run serve",
+    "firebase:emulators": "firebase emulators:start --only auth,firestore,functions",
+    "firebase:export": "firebase emulators:export ./emulator-data --force",
     "functions:deploy": "cd functions && npm run deploy",
     "deploy": "npm run build && firebase deploy",
     "deploy:hosting": "npm run build && firebase deploy --only hosting",

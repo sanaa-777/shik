@@ -133,11 +133,11 @@ export async function setUserRole(
   role: string
 ): Promise<ApiResponse<void>> {
   try {
-    const setRoleFn = httpsCallable<{ userId: string; role: string }, void>(
+    const setRoleFn = httpsCallable<{ targetUserId: string; role: string }, void>(
       functions,
       'setUserRole'
     )
-    await setRoleFn({ userId, role })
+    await setRoleFn({ targetUserId: userId, role })
     return { success: true, message: 'تم تحديث الصلاحية بنجاح' }
   } catch (error: unknown) {
     const message = (error as { message?: string }).message || 'حدث خطأ'

@@ -42,14 +42,11 @@ export const getMessagingInstance = async () => {
 }
 
 // Connect to emulators in development
-if (import.meta.env.DEV) {
-  const USE_EMULATORS = false // Set to true to use local emulators
-  if (USE_EMULATORS) {
-    connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true })
-    connectFirestoreEmulator(db, 'localhost', 8080)
-    connectFunctionsEmulator(functions, 'localhost', 5001)
-    connectStorageEmulator(storage, 'localhost', 9199)
-  }
+if (import.meta.env.DEV && import.meta.env.VITE_USE_FIREBASE_EMULATORS === 'true') {
+  connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true })
+  connectFirestoreEmulator(db, 'localhost', 8080)
+  connectFunctionsEmulator(functions, 'localhost', 5001)
+  connectStorageEmulator(storage, 'localhost', 9199)
 }
 
 export default app

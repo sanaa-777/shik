@@ -34,7 +34,7 @@ export interface ReverseTransactionInput {
 }
 
 const VALID_ROLES = ["customer", "agent", "admin", "super_admin"] as const;
-const VALID_CURRENCIES = ["USD", "EUR", "GBP", "CNY", "JPY"] as const;
+const VALID_CURRENCIES = ["YER", "USD", "SAR"] as const;
 const MAX_TRANSFER_AMOUNT = 1_000_000_00; // $1,000,000.00 in cents
 const MIN_TRANSFER_AMOUNT = 1; // 1 cent minimum
 const UUID_REGEX = /^[a-zA-Z0-9_-]{1,128}$/;
