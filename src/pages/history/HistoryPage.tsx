@@ -3,16 +3,15 @@ import {
   ArrowUpLeft,
   ArrowDownRight,
   Receipt,
-  Filter,
   Download,
   Search,
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useAuthStore } from '@/store/auth.store'
 import { getTransactionHistory } from '@/services/transaction.service'
-import { formatCurrency, formatDate, formatRelativeTime } from '@/utils/format'
+import { formatCurrency, formatDate } from '@/utils/format'
 import type { Transaction, TransactionType } from '@/types'
 
 const typeLabels: Record<TransactionType, string> = {

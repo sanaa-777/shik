@@ -24,7 +24,7 @@ const registerSchema = z.object({
 type RegisterForm = z.infer<typeof registerSchema>
 
 export function RegisterPage() {
-  const { loading: redirectLoading } = useRedirectIfAuth()
+  useRedirectIfAuth()
   const navigate = useNavigate()
 
   const {

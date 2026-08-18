@@ -18,7 +18,7 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>
 
 export function LoginPage() {
-  const { loading: redirectLoading } = useRedirectIfAuth()
+  useRedirectIfAuth()
   const navigate = useNavigate()
 
   const {

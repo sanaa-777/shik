@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Users, ArrowLeftRight, TrendingUp, Activity, UserCheck, UserX } from 'lucide-react'
+import { Users, ArrowLeftRight, TrendingUp, Activity, UserCheck } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { useRequireAdmin } from '@/hooks'
 import { getDashboardStats } from '@/services/admin.service'

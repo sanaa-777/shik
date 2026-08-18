@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
-import { Search, Filter, MoreVertical, UserCheck, UserX, Shield } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
+import { useState, useEffect, useCallback } from 'react'
+import { Search, MoreVertical, UserCheck, UserX } from 'lucide-react'
+import { Card } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { useRequireAdmin } from '@/hooks'
 import { getUsers, updateUserStatus, setUserRole } from '@/services/admin.service'
@@ -30,25 +29,25 @@ export function AdminUsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>('')
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
 
-  useEffect(() => {
-    loadUsers()
-  }, [roleFilter])
-
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     setLoading(true)
     const result = await getUsers(50, undefined, roleFilter || undefined)
     if (result.success && result.data) {
       setUsers(result.data.users)
     }
     setLoading(false)
-  }
+  }, [roleFilter])
+
+  useEffect(() => {
+    void loadUsers()
+  }, [loadUsers])
 
   const handleToggleStatus = async (userId: string, currentStatus: string) => {
     const newStatus = currentStatus === 'active' ? 'suspended' : 'active'
     const result = await updateUserStatus(userId, newStatus as 'active' | 'suspended')
     if (result.success) {
       toast.success(result.message!)
-      loadUsers()
+      void loadUsers()
     } else {
       toast.error(result.error!)
     }
@@ -58,7 +57,7 @@ export function AdminUsersPage() {
     const result = await setUserRole(userId, newRole)
     if (result.success) {
       toast.success(result.message!)
-      loadUsers()
+      void loadUsers()
     } else {
       toast.error(result.error!)
     }

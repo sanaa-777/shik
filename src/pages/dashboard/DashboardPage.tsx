@@ -5,10 +5,9 @@ import {
   ArrowDownRight,
   Receipt,
   TrendingUp,
-  TrendingDown,
   ArrowLeftRight,
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { useAuthStore } from '@/store/auth.store'
 import { getUserAccounts } from '@/services/account.service'
