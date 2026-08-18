@@ -12,6 +12,7 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    allowedHosts: ['3000-ihep5wu4hs2itmaoabg7g-431990ba.us2.manus.computer'],
   },
   build: {
     outDir: 'dist',
