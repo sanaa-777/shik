@@ -60,6 +60,9 @@ npm run dev
 
 # تشغيل Cloud Functions وحدها
 npm run functions:serve
+
+# اختبار تكامل Auth وFirestore وCloud Functions تلقائيًا
+npm run test:functions:emulator
 ```
 
 ## 🔌 تكامل الواجهة مع Cloud Functions

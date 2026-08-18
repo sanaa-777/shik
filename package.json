@@ -11,6 +11,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:functions:emulator": "npm --prefix functions run build && firebase emulators:exec --only auth,firestore,functions --project demo-shik \"node scripts/cloud-functions-emulator-smoke.cjs\"",
     "functions:serve": "cd functions && npm run serve",
     "firebase:emulators": "firebase emulators:start --only auth,firestore,functions",
     "firebase:export": "firebase emulators:export ./emulator-data --force",
